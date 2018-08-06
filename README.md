@@ -23,9 +23,9 @@ verisons with no problem.  The library itself is packaged via Maven as an EJB JA
 
 If you already have an existing KeyCloak server, you may certainly use that.  Otherwise, this 
 project includes Docker Compose files to stand up your own KeyCloak environment with 
-a Realm called *Soteria* that you can use.  This instance leverage PostgreSQL as its 
-backend database.  It comes pre-configured with some user accounts.  All that you need to do is configure your KeyCloak Client for use with your 
-Java EE application.
+a Realm called *Soteria* that you can use.  This instance leverage [PostgreSQL](https://www.postgresql.org) as its 
+backend database.  It comes pre-configured with some user accounts.  All that you need to do is 
+configure your KeyCloak Client for use with your Java EE application.
 
 ## Building the Library
 
@@ -36,4 +36,25 @@ the resulting JAR file within your application.
 ## Configuring a KeyCloak Client
 
 ## Integrating with a Java EE Application
+
+*Note:*  These instructions explain how to configure your Java EE web application to 
+integrate with Soteria/KeyCloak on Wildfly 11.  Other app servers -- Payara, MicroProfile, 
+Wildfly Swarm, etc. -- may have different configuration requirements.
+
+Integrating this library *does not* require you to configure your Wildfly instance 
+with the KeyCloak subsystem.  While you may want to do that for other reasons, this 
+library allows you to leverage KeyCloak without doing so.  First, you will need to modify 
+your `WEB-INF/jboss-web.xml` descriptor file to specify the `jaspitest` security domain. 
+ It should look like this when you are finished:
+
+`
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+      http://www.jboss.com/xml/ns/javaee
+      http://www.jboss.org/j2ee/schema/jboss-web_5_1.xsd">
+    <security-domain>jaspitest</security-domain>
+</jboss-web>
+`
 
