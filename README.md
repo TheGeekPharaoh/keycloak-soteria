@@ -1,5 +1,5 @@
 # keycloak-soteria
-Using KeyCloak as your Soteria Authentication Provider
+Use KeyCloak as your Soteria Authentication Provider
 
 ## Introduction
 
