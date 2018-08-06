@@ -1,0 +1,183 @@
+{
+	"realm": "soteria",
+	"displayNameHtml": "<div class=\"kc-logo-text\"><span>KeyCloak/Soteria PoC</span></div>",
+	"enabled": true,
+	"accessTokenLifespan": 240,
+	"accessCodeLifespan": 60,
+	"accessCodeLifespanUserAction": 300,
+	"ssoSessionIdleTimeout": 600,
+	"ssoSessionMaxLifespan": 36000,
+	"passwordCredentialGrantAllowed": true,
+	"sslRequired": "external",
+	"registrationAllowed": true,
+	"social": false,
+	"updateProfileOnInitialSocialLogin": false,
+	"privateKey": "MIICXAIBAAKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQABAoGAfmO8gVhyBxdqlxmIuglbz8bcjQbhXJLR2EoS8ngTXmN1bo2L90M0mUKSdc7qF10LgETBzqL8jYlQIbt+e6TH8fcEpKCjUlyq0Mf/vVbfZSNaVycY13nTzo27iPyWQHK5NLuJzn1xvxxrUeXI6A2WFpGEBLbHjwpx5WQG9A+2scECQQDvdn9NE75HPTVPxBqsEd2z10TKkl9CZxu10Qby3iQQmWLEJ9LNmy3acvKrE3gMiYNWb6xHPKiIqOR1as7L24aTAkEAtyvQOlCvr5kAjVqrEKXalj0Tzewjweuxc0pskvArTI2Oo070h65GpoIKLc9jf+UA69cRtquwP93aZKtW06U8dQJAF2Y44ks/mK5+eyDqik3koCI08qaC8HYq2wVl7G2QkJ6sbAaILtcvD92ToOvyGyeE0flvmDZxMYlvaZnaQ0lcSQJBAKZU6umJi3/xeEbkJqMfeLclD27XGEFoPeNrmdx0q10Azp4NfJAY+Z8KRyQCR2BEG+oNitBOZ+YXF9KCpH3cdmECQHEigJhYg+ykOvr1aiZUMFT72HU0jnmQe2FVekuG+LJUt2Tm7GtMjTFoGpf0JwrVuZN39fOYAlo+nTixgeW7X8Y=",
+	"publicKey": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB",
+	"requiredCredentials": [
+		"password"
+	],
+	"clients": [
+		{
+			"clientId": "soteria-test",
+			"name": "Soteria Test Client",
+			"description": "KeyCloak/Soteria test client",
+			"surrogateAuthRequired": false,
+			"enabled": true,
+			"clientAuthenticatorType": "client-secret",
+			"secret": "password",
+			"redirectUris": [
+				"http://localhost:8080/soteria-test/*"
+			],
+			"webOrigins": [],
+			"notBefore": 0,
+			"bearerOnly": false,
+			"consentRequired": false,
+			"standardFlowEnabled": true,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"publicClient": true,
+			"frontchannelLogout": false,
+			"protocol": "openid-connect",
+			"attributes": {
+				"saml.assertion.signature": "false",
+				"saml.force.post.binding": "false",
+				"saml.multivalued.roles": "false",
+				"saml.encrypt": "false",
+				"saml.server.signature": "false",
+				"saml.server.signature.keyinfo.ext": "false",
+				"exclude.session.state.from.auth.response": "false",
+				"saml_force_name_id_format": "false",
+				"saml.client.signature": "false",
+				"tls.client.certificate.bound.access.tokens": "false",
+				"saml.authnstatement": "false",
+				"display.on.consent.screen": "false",
+				"saml.onetimeuse.condition": "false"
+			},
+			"authenticationFlowBindingOverrides": {
+				
+			},
+			"fullScopeAllowed": true,
+			"nodeReRegistrationTimeout": -1,
+			"defaultClientScopes": [
+				"role_list",
+				"profile",
+				"email"
+			],
+			"optionalClientScopes": [
+				"address",
+				"phone",
+				"offline_access"
+			]
+		}
+	],
+	"users": [
+		{
+			"username": "admin",
+			"enabled": true,
+			"email": "admin@example.org",
+			"firstName": "Realm",
+			"lastName": "Admin",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "admin123!"
+				}
+			],
+			"realmRoles": [],
+			"applicationRoles": {
+				"realm-management": [
+					"realm-admin"
+				]
+			}
+		},
+		{
+			"username": "user1",
+			"enabled": true,
+			"email": "user1@example.org",
+			"firstName": "user1",
+			"lastName": "user1",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password123"
+				}
+			],
+			"realmRoles": [
+				"users",
+				"role1"
+			],
+			"applicationRoles": {
+				
+			}
+		},
+		{
+			"username": "user2",
+			"enabled": true,
+			"email": "user2@example.org",
+			"firstName": "user2",
+			"lastName": "user2",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password123"
+				}
+			],
+			"realmRoles": [
+				"users",
+				"role1",
+				"role2"
+			],
+			"applicationRoles": {
+				
+			}
+		},
+		{
+			"username": "user3",
+			"enabled": true,
+			"email": "user3@example.org",
+			"firstName": "user3",
+			"lastName": "user3",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password123"
+				}
+			],
+			"realmRoles": [
+				"users",
+				"role1",
+				"role2",
+				"role3"
+			],
+			"applicationRoles": {
+				
+			}
+		}
+	],
+	"roles": {
+		"realm": [
+			{
+				"name": "users",
+				"description": ""
+			},
+			{
+				"name": "role1",
+				"description": ""
+			},
+			{
+				"name": "role2",
+				"description": ""
+			},
+			{
+				"name": "role3",
+				"description": ""
+			}
+		]
+	},
+	"defaultRoles": [
+		"users"
+	],
+	"applications": []
+}

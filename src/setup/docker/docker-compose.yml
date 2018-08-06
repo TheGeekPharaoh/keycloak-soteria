@@ -1,0 +1,26 @@
+version: '3'
+services:
+    pgdb:
+        image: postgres:10.4
+        ports:
+            - 5432:5432
+        volumes:
+            - ./postgres/pgdb/scripts:/docker-entrypoint-initdb.d
+    keycloak:
+      build: ./keycloak
+      ports:
+          - 8880:8080
+      depends_on:
+          - "pgdb"
+      environment:
+          - KEYCLOAK_USER=kcadmin
+          - KEYCLOAK_PASSWORD=password
+          - DB_VENDOR=postgres
+          - DB_ADDR=pgdb
+          - DB_PORT=5432
+          - DB_DATABASE=keycloak
+          - DB_USER=keycloak
+          - DB_PASSWORD=password
+          - PROXY_ADDRESS_FORWARDING=true
+          #- KEYCLOAK_LOGLEVEL=DEBUG
+          #- ROOT_LOGLEVEL=DEBUG
