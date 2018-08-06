@@ -1,0 +1,11 @@
+{
+	"realm": "soteria",
+	"auth-server-url": "http://localhost:8880/auth",
+	"ssl-required": "external",
+	"resource": "soteria-test",
+	"principal-attribute": "preferred_username",
+	"credentials": {
+		"secret": "password"
+	},
+	"confidential-port": 0
+}
