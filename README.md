@@ -47,7 +47,7 @@ library allows you to leverage KeyCloak without doing so.  First, you will need 
 your `WEB-INF/jboss-web.xml` descriptor file to specify the `jaspitest` security domain. 
  It should look like this when you are finished:
 
-`
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -56,5 +56,5 @@ your `WEB-INF/jboss-web.xml` descriptor file to specify the `jaspitest` security
       http://www.jboss.org/j2ee/schema/jboss-web_5_1.xsd">
     <security-domain>jaspitest</security-domain>
 </jboss-web>
-`
+```
 
