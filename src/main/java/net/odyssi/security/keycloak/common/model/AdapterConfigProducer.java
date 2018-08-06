@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.odyssi.security.keycloak.common.model;
 
@@ -15,23 +15,23 @@ import org.keycloak.representations.adapters.config.AdapterConfig;
 
 /**
  * A CDI {@link Producer} for {@link AdapterConfig} instances
- * 
+ *
  * @author Steven D. Nakhla
  *
  */
 public class AdapterConfigProducer {
+
+	private static final String KEYCLOAK_CONFIG_FILE_PATH = "/keycloak.json";
 
 	/**
 	 * Logger for this class
 	 */
 	private static final Logger logger = Logger.getLogger(AdapterConfigProducer.class);
 
-	private static final String KEYCLOAK_CONFIG_FILE_PATH = "/keycloak.json";
-
 	/**
 	 * {@link Produces} an {@link AdapterConfig} object using the injected KeyCloak
 	 * configuration information
-	 * 
+	 *
 	 * @return The KeyCloak adapter config
 	 */
 	@Produces

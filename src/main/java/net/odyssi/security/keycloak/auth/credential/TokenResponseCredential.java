@@ -20,7 +20,7 @@ import org.keycloak.representations.AccessToken;
 /**
  * The {@link Credential} object encapsulating the {@link AccessToken} returned
  * by KeyCloak after authentication
- * 
+ *
  * @author Steven D. Nakhla
  *
  */

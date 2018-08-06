@@ -1,26 +1,38 @@
 /**
- * 
+ *
  */
 package net.odyssi.security.keycloak.auth;
-
-import org.apache.log4j.Logger;
-import org.keycloak.representations.AccessToken;
-
-import net.odyssi.security.keycloak.auth.credential.TokenResponseCredential;
-import net.odyssi.security.keycloak.common.model.JWTPrincipal;
-import net.odyssi.security.keycloak.common.model.JWTPrincipal.JWTPrincipalBuilder;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.keycloak.adapters.BearerTokenRequestAuthenticator;
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.adapters.KeycloakDeploymentBuilder;
+import org.keycloak.adapters.servlet.ServletHttpFacade;
+import org.keycloak.adapters.spi.AuthOutcome;
+import org.keycloak.adapters.spi.HttpFacade;
+import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.adapters.config.AdapterConfig;
+
+import net.odyssi.security.keycloak.auth.credential.AccessTokenCredential;
+import net.odyssi.security.keycloak.auth.credential.TokenResponseCredential;
+import net.odyssi.security.keycloak.common.model.JWTPrincipal;
+import net.odyssi.security.keycloak.common.model.JWTPrincipal.JWTPrincipalBuilder;
 
 /**
  * An {@link IdentityStore} implementation used to validate OAuth credentials
- * 
+ *
  * @author Steven D. Nakhla
  *
  */
@@ -32,9 +44,49 @@ public class OAuthIdentityStore implements IdentityStore {
 	 */
 	private static final Logger logger = Logger.getLogger(OAuthIdentityStore.class);
 
+	@Inject
+	private AdapterConfig adapterConfig = null;
+
+	private KeycloakDeployment deployment = null;
+
+	@Inject
+	private Instance<HttpServletRequest> servletRequestInstance = null;
+
+	/**
+	 * Builds a {@link JWTPrincipal} from a KeyCloak {@link AccessToken}
+	 *
+	 * @param token The access token
+	 * @return The JWT principal
+	 */
+	protected JWTPrincipal buildPrincipal(AccessToken token) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("buildPrincipal(AccessToken) - start"); //$NON-NLS-1$
+		}
+
+		Set<String> roles = token.getRealmAccess().getRoles();
+		if (logger.isDebugEnabled()) {
+			logger.debug("buildPrincipal(AccessToken) - Set<String> roles=" + roles); //$NON-NLS-1$
+		}
+
+		JWTPrincipalBuilder builder = JWTPrincipalBuilder.getInstance(token.getPreferredUsername());
+
+		JWTPrincipal principal = builder.setClaims(token.getOtherClaims()).setEmailAddress(token.getEmail())
+				.setFamilyName(token.getFamilyName()).setFullName(token.getName()).setGivenName(token.getGivenName())
+				.setIdentifier(token.getId()).setLoginName(token.getPreferredUsername()).setRoles(roles).build();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("buildPrincipal(AccessToken) - JWTPrincipal principal=" + principal); //$NON-NLS-1$
+		}
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("buildPrincipal(AccessToken) - end"); //$NON-NLS-1$
+		}
+		return principal;
+	}
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * javax.security.enterprise.identitystore.IdentityStore#getCallerGroups(javax.
 	 * security.enterprise.identitystore.CredentialValidationResult)
@@ -53,9 +105,69 @@ public class OAuthIdentityStore implements IdentityStore {
 		return groups;
 	}
 
+	/**
+	 * Performs object initialization
+	 */
+	@PostConstruct
+	private void init() {
+		if (logger.isDebugEnabled()) {
+			logger.debug("init() - start"); //$NON-NLS-1$
+		}
+
+		deployment = KeycloakDeploymentBuilder.build(adapterConfig);
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("init() - end"); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Validates an {@link AccessTokenCredential} credential
+	 *
+	 * @param credential The credential to validate
+	 * @return The validation result
+	 */
+	protected CredentialValidationResult validate(AccessTokenCredential credential) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("validate(AccessTokenCredential) - start"); //$NON-NLS-1$
+		}
+
+		HttpServletRequest servletRequest = servletRequestInstance.get();
+
+		BearerTokenRequestAuthenticator authenticator = new BearerTokenRequestAuthenticator(deployment);
+		HttpFacade facade = new ServletHttpFacade(servletRequest, null);
+
+		AuthOutcome outcome = authenticator.authenticate(facade);
+		if (logger.isDebugEnabled()) {
+			logger.debug("validate(AccessTokenCredential) - AuthOutcome outcome=" + outcome); //$NON-NLS-1$
+		}
+
+		CredentialValidationResult result = null;
+		if (outcome.equals(AuthOutcome.AUTHENTICATED)) {
+			if (logger.isInfoEnabled()) {
+				logger.info(
+						"validate(AccessTokenCredential) - Access token validated successfully.  Generating principal..."); //$NON-NLS-1$
+			}
+
+			AccessToken token = authenticator.getToken();
+			JWTPrincipal principal = this.buildPrincipal(token);
+
+			result = new CredentialValidationResult(principal, principal.getRoles());
+		} else {
+			logger.error("validate(AccessTokenCredential) - Access token failed validation.  Returning error...", null); //$NON-NLS-1$
+
+			result = CredentialValidationResult.INVALID_RESULT;
+		}
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("validate(AccessTokenCredential) - end"); //$NON-NLS-1$
+		}
+		return result;
+	}
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * javax.security.enterprise.identitystore.IdentityStore#validate(javax.security
 	 * .enterprise.credential.Credential)
@@ -75,6 +187,8 @@ public class OAuthIdentityStore implements IdentityStore {
 
 		if (credential instanceof TokenResponseCredential) {
 			result = this.validate((TokenResponseCredential) credential);
+		} else if (credential instanceof AccessTokenCredential) {
+			result = this.validate((AccessTokenCredential) credential);
 		} else {
 			logger.warn("validate(Credential) - Unable to handle credential type - credentialClass=" + credentialClass, //$NON-NLS-1$
 					null);
@@ -90,7 +204,7 @@ public class OAuthIdentityStore implements IdentityStore {
 
 	/**
 	 * Validates a {@link TokenResponseCredential} credential
-	 * 
+	 *
 	 * @param credential The credential to validate
 	 * @return The validation result
 	 */
@@ -114,22 +228,8 @@ public class OAuthIdentityStore implements IdentityStore {
 						"validate(TokenResponseCredential) - Access token found in token response credential.  Building successful validation result..."); //$NON-NLS-1$
 			}
 
-			Set<String> roles = token.getRealmAccess().getRoles();
-			if (logger.isDebugEnabled()) {
-				logger.debug("validate(TokenResponseCredential) - Set<String> roles=" + roles); //$NON-NLS-1$
-			}
-
-			JWTPrincipalBuilder builder = JWTPrincipalBuilder.getInstance(token.getPreferredUsername());
-
-			JWTPrincipal principal = builder.setClaims(token.getOtherClaims()).setEmailAddress(token.getEmail())
-					.setFamilyName(token.getFamilyName()).setFullName(token.getName())
-					.setGivenName(token.getGivenName()).setIdentifier(token.getId())
-					.setLoginName(token.getPreferredUsername()).setRoles(roles).build();
-			if (logger.isDebugEnabled()) {
-				logger.debug("validate(TokenResponseCredential) - JWTPrincipal principal=" + principal); //$NON-NLS-1$
-			}
-
-			result = new CredentialValidationResult(principal, roles);
+			JWTPrincipal principal = this.buildPrincipal(token);
+			result = new CredentialValidationResult(principal, principal.getRoles());
 		}
 
 		if (logger.isDebugEnabled()) {
@@ -140,7 +240,7 @@ public class OAuthIdentityStore implements IdentityStore {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see javax.security.enterprise.identitystore.IdentityStore#validationTypes()
 	 */
 	@Override

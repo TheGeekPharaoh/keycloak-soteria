@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 package net.odyssi.security.keycloak.common;
 
 /**
  * Constant values used throughout the library
- * 
+ *
  * @author Steven D. Nakhla
  *
  */
