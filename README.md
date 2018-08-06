@@ -23,8 +23,8 @@ verisons with no problem.  The library itself is packaged via Maven as an EJB JA
 
 If you already have an existing KeyCloak server, you may certainly use that.  Otherwise, this 
 project includes Docker Compose files to stand up your own KeyCloak environment with 
-a Realm called *Soteria* that you can use.  It comes pre-configured with some user 
-accounts.  All that you need to do is configure your KeyCloak Client for use with your 
+a Realm called *Soteria* that you can use.  This instance leverage PostgreSQL as its 
+backend database.  It comes pre-configured with some user accounts.  All that you need to do is configure your KeyCloak Client for use with your 
 Java EE application.
 
 ## Building the Library
@@ -32,3 +32,8 @@ Java EE application.
 Building the `keycloak-soteria` library is as simple as running `mvn install`.  All 
 dependencies are defined within the `pom.xml` file.  Once it is built, you can include 
 the resulting JAR file within your application.
+
+## Configuring a KeyCloak Client
+
+## Integrating with a Java EE Application
+
