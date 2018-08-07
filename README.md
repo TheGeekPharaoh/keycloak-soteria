@@ -42,7 +42,7 @@ the resulting JAR file within your application
 
 ## Integrating with a Java EE Application
 
-*Note:*  These instructions explain how to configure your Java EE web application 
+*NOTE:*  These instructions explain how to configure your Java EE web application 
 to integrate with Soteria/KeyCloak on Wildfly 11.  Other app servers -- Payara, MicroProfile, 
 Wildfly Swarm, etc. -- may have different configuration requirements
 
@@ -85,9 +85,22 @@ EE web application using the standard security annotations, such as `@ServletSec
 
 ### Logging-in with KeyCloak
 
+Soteria recognizes when an unauthenticated user is attempting to access a protected 
+resource.  When this occurs, it will kick off the authentication process, eventually 
+calling on the `KeyCloakAuthenticationMechanism` class to redirect the user over to 
+KeyCloak to authenticate.  If you are using the KeyCloak Docker container from this 
+repository, you can login with the username `user1` and password `password123`.  Once 
+successfully authenticated, you will be redirected back to your application.  This 
+process leverages the *Authorization Code* grant type.  The `KeyCloakAuthenticationMechanism` 
+class will attempt to validate the authorization code provided by KeyCloak and exchange 
+it for an Access Token.  If successful, you will be redirected to the originally requested 
+protected resource.  You will notice that all role membership is derived from the access 
+token and is included in your Java EE `Subject` and `Principal` objects.  It is easy to confirm 
+this by calling `HttpServletRequest#isUserInRole()`.
+
 ### Authenticating with a Bearer Token
 
-KeyCloak also supports the Password Grant OAuth grant type, allowing you to perform 
+KeyCloak also supports the *Password Grant* grant type, allowing you to perform 
 an HTTP POST with the user credentials and receive an Access Token in the response. 
  You can use this token to make subsequent calls to your application through RESTful 
  services, using either the command line or programmatic methods.
