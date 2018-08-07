@@ -9,6 +9,7 @@
 	<packaging>ejb</packaging>
 
 	<name>KeyCloak-Soteria Security Integration</name>
+	<description>Soteria/JSR 375 support for authentication and identity management using KeyCloak as the authentication provider.</description>
 
 	<developers>
 		<developer>
