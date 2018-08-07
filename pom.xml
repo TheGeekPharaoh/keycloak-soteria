@@ -31,7 +31,7 @@
 		<version.deltaspike>1.8.0</version.deltaspike>
 		<version.soteria>1.0</version.soteria>
 		<version.jose>4.23</version.jose>
-		<version.keycloak>4.1.0.Final</version.keycloak>
+		<version.keycloak>4.2.1.Final</version.keycloak>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
