@@ -10,6 +10,21 @@
 
 	<name>KeyCloak-Soteria Security Integration</name>
 
+	<developers>
+		<developer>
+			<name>Steve Nakhla</name>
+			<organizationUrl>https://github.com/sdnakhla/keycloak-soteria</organizationUrl>
+			<url>https://github.com/sdnakhla/keycloak-soteria</url>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
 	<properties>
 		<!-- Dependency versions -->
 		<version.deltaspike>1.8.0</version.deltaspike>
