@@ -96,7 +96,7 @@ class will attempt to validate the authorization code provided by KeyCloak and e
 it for an Access Token.  If successful, you will be redirected to the originally requested 
 protected resource.  You will notice that all role membership is derived from the access 
 token and is included in your Java EE `Subject` and `Principal` objects.  It is easy to confirm 
-this by calling `HttpServletRequest#isUserInRole()`.
+this by calling [`HttpServletRequest#isUserInRole()`](https://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletRequest.html#isUserInRole-java.lang.String-).
 
 ### Authenticating with a Bearer Token
 
