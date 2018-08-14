@@ -3,13 +3,18 @@
  */
 package net.odyssi.security.keycloak.auth;
 
+import java.io.IOException;
+import java.security.Principal;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.message.callback.CallerPrincipalCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
-import javax.security.enterprise.authentication.mechanism.http.AutoApplySession;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.credential.Credential;
@@ -43,7 +48,6 @@ import net.odyssi.security.keycloak.common.Constants;
  *
  */
 @ApplicationScoped
-@AutoApplySession
 public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechanism {
 
 	/**
@@ -297,6 +301,24 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 			throws AuthenticationException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - start"); //$NON-NLS-1$
+		}
+
+		// TODO Move to performKeyCloakLogin()
+		Principal userPrincipal = req.getUserPrincipal();
+		if (userPrincipal != null) {
+			try {
+				ctx.getHandler()
+						.handle(new Callback[] { new CallerPrincipalCallback(ctx.getClientSubject(), userPrincipal) });
+			} catch (IOException | UnsupportedCallbackException e) {
+				logger.error("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext)", e); //$NON-NLS-1$
+
+				throw new AuthenticationException(e);
+			}
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - end"); //$NON-NLS-1$
+			}
+			return AuthenticationStatus.SUCCESS;
 		}
 
 		boolean authRequest = ctx.isAuthenticationRequest();
