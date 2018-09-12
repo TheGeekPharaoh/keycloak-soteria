@@ -101,8 +101,8 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 			return this;
 		}
 
-		public JWTPrincipalBuilder setSecurityRealm(String securityRealm) {
-			principal.securityRealm = securityRealm;
+		public JWTPrincipalBuilder setIssuer(String issuer) {
+			principal.issuer = issuer;
 			return this;
 		}
 	}
@@ -125,7 +125,7 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 
 	private Set<String> roles = new LinkedHashSet<>();
 
-	private String securityRealm = null;
+	private String issuer = null;
 
 	public JWTPrincipal(String name) {
 		super(name);
@@ -204,11 +204,11 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 		} else if (!roles.equals(other.roles)) {
 			return false;
 		}
-		if (securityRealm == null) {
-			if (other.securityRealm != null) {
+		if (issuer == null) {
+			if (other.issuer != null) {
 				return false;
 			}
-		} else if (!securityRealm.equals(other.securityRealm)) {
+		} else if (!issuer.equals(other.issuer)) {
 			return false;
 		}
 		return true;
@@ -246,8 +246,8 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 		return roles;
 	}
 
-	public String getSecurityRealm() {
-		return securityRealm;
+	public String getIssuer() {
+		return issuer;
 	}
 
 	/*
@@ -267,7 +267,7 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 		result = prime * result + (identifier == null ? 0 : identifier.hashCode());
 		result = prime * result + (loginName == null ? 0 : loginName.hashCode());
 		result = prime * result + (roles == null ? 0 : roles.hashCode());
-		result = prime * result + (securityRealm == null ? 0 : securityRealm.hashCode());
+		result = prime * result + (issuer == null ? 0 : issuer.hashCode());
 		return result;
 	}
 
@@ -280,7 +280,7 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 	public String toString() {
 		return "JWTPrincipal [claims=" + claims + ", emailAddress=" + emailAddress + ", familyName=" + familyName
 				+ ", fullName=" + fullName + ", givenName=" + givenName + ", identifier=" + identifier + ", loginName="
-				+ loginName + ", roles=" + roles + ", securityRealm=" + securityRealm + "]";
+				+ loginName + ", roles=" + roles + ", issuer=" + issuer + "]";
 	}
 
 }
