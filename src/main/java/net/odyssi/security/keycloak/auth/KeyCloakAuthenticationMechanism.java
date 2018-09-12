@@ -15,6 +15,7 @@ import javax.security.auth.message.callback.CallerPrincipalCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
+import javax.security.enterprise.authentication.mechanism.http.AutoApplySession;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.credential.Credential;
@@ -48,6 +49,7 @@ import net.odyssi.security.keycloak.common.Constants;
  *
  */
 @ApplicationScoped
+@AutoApplySession
 public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechanism {
 
 	/**
