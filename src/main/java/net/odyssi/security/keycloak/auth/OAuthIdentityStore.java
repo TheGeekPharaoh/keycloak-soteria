@@ -72,6 +72,7 @@ public class OAuthIdentityStore implements IdentityStore {
 
 		JWTPrincipal principal = builder.setClaims(token.getOtherClaims()).setEmailAddress(token.getEmail())
 				.setFamilyName(token.getFamilyName()).setFullName(token.getName()).setGivenName(token.getGivenName())
+				.setSecurityRealm(getSecurityRealm(token))
 				.setIdentifier(token.getId()).setLoginName(token.getPreferredUsername()).setRoles(roles).build();
 
 		if (logger.isDebugEnabled()) {
@@ -82,6 +83,17 @@ public class OAuthIdentityStore implements IdentityStore {
 			logger.debug("buildPrincipal(AccessToken) - end"); //$NON-NLS-1$
 		}
 		return principal;
+	}
+
+	/**
+	 * Returns the name of the security realm for the token
+	 * 
+	 * @param token The access token
+	 * @return The security realm
+	 */
+	protected String getSecurityRealm(AccessToken token) {
+		// TODO Implement method
+		return "Praxeum";
 	}
 
 	/*
