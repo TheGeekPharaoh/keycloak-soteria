@@ -91,6 +91,11 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 			return this;
 		}
 
+		public JWTPrincipalBuilder setIssuer(String issuer) {
+			principal.issuer = issuer;
+			return this;
+		}
+
 		public JWTPrincipalBuilder setLoginName(String loginName) {
 			principal.loginName = loginName;
 			return this;
@@ -98,11 +103,6 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 
 		public JWTPrincipalBuilder setRoles(Set<String> roles) {
 			principal.roles = new LinkedHashSet<>(roles);
-			return this;
-		}
-
-		public JWTPrincipalBuilder setIssuer(String issuer) {
-			principal.issuer = issuer;
 			return this;
 		}
 	}
@@ -121,11 +121,11 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 
 	private String identifier = null;
 
+	private String issuer = null;
+
 	private String loginName = null;
 
 	private Set<String> roles = new LinkedHashSet<>();
-
-	private String issuer = null;
 
 	public JWTPrincipal(String name) {
 		super(name);
@@ -238,16 +238,16 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 		return identifier;
 	}
 
+	public String getIssuer() {
+		return issuer;
+	}
+
 	public String getLoginName() {
 		return loginName;
 	}
 
 	public Set<String> getRoles() {
 		return roles;
-	}
-
-	public String getIssuer() {
-		return issuer;
 	}
 
 	/*

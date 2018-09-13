@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.security.enterprise.credential.Credential;
@@ -27,6 +28,7 @@ import org.keycloak.representations.adapters.config.AdapterConfig;
 
 import net.odyssi.security.keycloak.auth.credential.AccessTokenCredential;
 import net.odyssi.security.keycloak.auth.credential.TokenResponseCredential;
+import net.odyssi.security.keycloak.common.AuthenticationSuccessEvent;
 import net.odyssi.security.keycloak.common.model.JWTPrincipal;
 import net.odyssi.security.keycloak.common.model.JWTPrincipal.JWTPrincipalBuilder;
 
@@ -47,6 +49,9 @@ public class OAuthIdentityStore implements IdentityStore {
 	@Inject
 	@SuppressWarnings("cdi-ambiguous-dependency")
 	private AdapterConfig adapterConfig = null;
+
+	@Inject
+	private Event<AuthenticationSuccessEvent> authenticationSuccessEvent = null;
 
 	private KeycloakDeployment deployment = null;
 
@@ -196,6 +201,18 @@ public class OAuthIdentityStore implements IdentityStore {
 					null);
 
 			result = CredentialValidationResult.NOT_VALIDATED_RESULT;
+		}
+
+		if (result.getStatus().equals(CredentialValidationResult.Status.VALID)) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("validate(Credential) - Credential validation successful.  Emitting CDI event..."); //$NON-NLS-1$
+			}
+
+			authenticationSuccessEvent.fire(new AuthenticationSuccessEvent((JWTPrincipal) result.getCallerPrincipal()));
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("validate(Credential) - CDI event emitted."); //$NON-NLS-1$
+			}
 		}
 
 		if (logger.isDebugEnabled()) {

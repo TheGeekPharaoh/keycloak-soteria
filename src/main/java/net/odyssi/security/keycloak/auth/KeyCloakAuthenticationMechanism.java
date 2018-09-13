@@ -6,8 +6,8 @@ package net.odyssi.security.keycloak.auth;
 import java.io.IOException;
 import java.security.Principal;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.UnsupportedCallbackException;
@@ -58,9 +58,8 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 	private static final Logger logger = Logger.getLogger(KeyCloakAuthenticationMechanism.class);
 
 	@Inject
-	private AdapterConfig adapterConfig = null;
-
-	private KeycloakDeployment deployment = null;
+	@SuppressWarnings("cdi-ambiguous-dependency")
+	private Instance<AdapterConfig> adapterConfigInstance = null;
 
 	@Inject
 	private IdentityStore identityStore = null;
@@ -84,22 +83,6 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("cleanSubject(HttpServletRequest, HttpServletResponse, HttpMessageContext) - end"); //$NON-NLS-1$
-		}
-	}
-
-	/**
-	 * Performs object initialization
-	 */
-	@PostConstruct
-	private void init() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("init() - start"); //$NON-NLS-1$
-		}
-
-		deployment = KeycloakDeploymentBuilder.build(adapterConfig);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("init() - end"); //$NON-NLS-1$
 		}
 	}
 
@@ -139,19 +122,22 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 	/**
 	 * Performs a KeyCloak authentication
 	 *
-	 * @param req The servlet request
-	 * @param res The servlet response
-	 * @param ctx The message context
+	 * @param adapterConfig The Keycloak adapter configuration
+	 * @param req           The servlet request
+	 * @param res           The servlet response
+	 * @param ctx           The message context
+	 *
 	 * @return The authentication status
 	 */
-	protected AuthenticationStatus performKeyCloakLogin(HttpServletRequest req, HttpServletResponse res,
-			HttpMessageContext ctx) {
+	protected AuthenticationStatus performKeyCloakLogin(AdapterConfig adapterConfig, HttpServletRequest req,
+			HttpServletResponse res, HttpMessageContext ctx) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("performKeyCloakLogin(HttpServletRequest, HttpServletResponse, HttpMessageContext) - start"); //$NON-NLS-1$
 		}
 
 		AuthenticationStatus status = null;
 		OIDCServletHttpFacade facade = new OIDCServletHttpFacade(req, res);
+		KeycloakDeployment deployment = KeycloakDeploymentBuilder.build(adapterConfig);
 
 		if (deployment == null || !deployment.isConfigured()) {
 			logger.error(
@@ -305,55 +291,64 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 			logger.debug("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - start"); //$NON-NLS-1$
 		}
 
-		// TODO Move to performKeyCloakLogin()
-		Principal userPrincipal = req.getUserPrincipal();
-		if (userPrincipal != null) {
-			try {
-				ctx.getHandler()
-						.handle(new Callback[] { new CallerPrincipalCallback(ctx.getClientSubject(), userPrincipal) });
-			} catch (IOException | UnsupportedCallbackException e) {
-				logger.error("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext)", e); //$NON-NLS-1$
-
-				throw new AuthenticationException(e);
-			}
-
-			if (logger.isDebugEnabled()) {
-				logger.debug("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - end"); //$NON-NLS-1$
-			}
-			return AuthenticationStatus.SUCCESS;
-		}
-
-		boolean authRequest = ctx.isAuthenticationRequest();
-		boolean protectedResource = ctx.isProtected();
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - authRequest=" //$NON-NLS-1$
-					+ authRequest + ", protectedResource=" + protectedResource); //$NON-NLS-1$
-		}
-
 		AuthenticationStatus status = null;
+		AdapterConfig config = adapterConfigInstance.get();
+		if (config == null) {
+			logger.warn(
+					"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - No Keycloak adapter config found.  Continuing...", //$NON-NLS-1$
+					null);
 
-		AuthenticationParameters params = ctx.getAuthParameters();
-		boolean newAuthentication = params.isNewAuthentication();
-		if (logger.isDebugEnabled()) {
-			logger.debug(
-					"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - boolean newAuthentication=" //$NON-NLS-1$
-							+ newAuthentication);
-		}
-
-		if (isLoginRequest(req, ctx)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
-						"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - New authentication request found.  Continuing to OAuth provider..."); //$NON-NLS-1$
-			}
-			status = this.performKeyCloakLogin(req, res, ctx);
+			status = AuthenticationStatus.NOT_DONE;
 		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug(
-						"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - Request is not a login request.  Continuing..."); //$NON-NLS-1$
+			// TODO Move to performKeyCloakLogin()
+			Principal userPrincipal = req.getUserPrincipal();
+			if (userPrincipal != null) {
+				try {
+					ctx.getHandler().handle(
+							new Callback[] { new CallerPrincipalCallback(ctx.getClientSubject(), userPrincipal) });
+				} catch (IOException | UnsupportedCallbackException e) {
+					logger.error("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext)", e); //$NON-NLS-1$
+
+					throw new AuthenticationException(e);
+				}
+
+				if (logger.isDebugEnabled()) {
+					logger.debug("validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - end"); //$NON-NLS-1$
+				}
+				return AuthenticationStatus.SUCCESS;
 			}
 
-			status = ctx.doNothing();
+			boolean authRequest = ctx.isAuthenticationRequest();
+			boolean protectedResource = ctx.isProtected();
+
+			if (logger.isDebugEnabled()) {
+				logger.debug(
+						"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - authRequest=" //$NON-NLS-1$
+								+ authRequest + ", protectedResource=" + protectedResource); //$NON-NLS-1$
+			}
+
+			AuthenticationParameters params = ctx.getAuthParameters();
+			boolean newAuthentication = params.isNewAuthentication();
+			if (logger.isDebugEnabled()) {
+				logger.debug(
+						"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - boolean newAuthentication=" //$NON-NLS-1$
+								+ newAuthentication);
+			}
+
+			if (isLoginRequest(req, ctx)) {
+				if (logger.isDebugEnabled()) {
+					logger.debug(
+							"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - New authentication request found.  Continuing to OAuth provider..."); //$NON-NLS-1$
+				}
+				status = this.performKeyCloakLogin(config, req, res, ctx);
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug(
+							"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - Request is not a login request.  Continuing..."); //$NON-NLS-1$
+				}
+
+				status = ctx.doNothing();
+			}
 		}
 
 		if (logger.isDebugEnabled()) {
