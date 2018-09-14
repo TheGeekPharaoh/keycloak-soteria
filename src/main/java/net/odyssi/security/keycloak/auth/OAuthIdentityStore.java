@@ -78,8 +78,8 @@ public class OAuthIdentityStore implements IdentityStore {
 
 		JWTPrincipal principal = builder.setClaims(token.getOtherClaims()).setEmailAddress(token.getEmail())
 				.setFamilyName(token.getFamilyName()).setFullName(token.getName()).setGivenName(token.getGivenName())
-				.setIssuer(token.getIssuer()).setIdentifier(token.getId()).setLoginName(token.getPreferredUsername())
-				.setRoles(roles).build();
+				.setIssuer(token.getIssuer()).setIdentifier(token.getSubject())
+				.setLoginName(token.getPreferredUsername()).setRoles(roles).build();
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("buildPrincipal(AccessToken) - JWTPrincipal principal=" + principal); //$NON-NLS-1$
