@@ -33,7 +33,7 @@ public class TokenResponseCredential implements Credential {
 	}
 
 	public AccessToken getTokenResponse() {
-		return tokenResponse;
+		return this.tokenResponse;
 	}
 
 }

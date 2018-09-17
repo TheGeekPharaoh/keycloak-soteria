@@ -48,7 +48,7 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 		}
 
 		public JWTPrincipalBuilder addRole(String role) {
-			principal.roles.add(role);
+			this.principal.roles.add(role);
 			return this;
 		}
 
@@ -58,51 +58,51 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 		 * @return The JWT principal
 		 */
 		public JWTPrincipal build() {
-			return principal;
+			return this.principal;
 		}
 
 		public JWTPrincipalBuilder setClaims(Map<String, Object> claims) {
-			principal.claims = new HashMap<>(claims);
+			this.principal.claims = new HashMap<>(claims);
 			return this;
 		}
 
 		public JWTPrincipalBuilder setEmailAddress(String emailAddress) {
-			principal.emailAddress = emailAddress;
+			this.principal.emailAddress = emailAddress;
 			return this;
 		}
 
 		public JWTPrincipalBuilder setFamilyName(String familyName) {
-			principal.familyName = familyName;
+			this.principal.familyName = familyName;
 			return this;
 		}
 
 		public JWTPrincipalBuilder setFullName(String fullName) {
-			principal.fullName = fullName;
+			this.principal.fullName = fullName;
 			return this;
 		}
 
 		public JWTPrincipalBuilder setGivenName(String givenName) {
-			principal.givenName = givenName;
+			this.principal.givenName = givenName;
 			return this;
 		}
 
 		public JWTPrincipalBuilder setIdentifier(String identifier) {
-			principal.identifier = identifier;
+			this.principal.identifier = identifier;
 			return this;
 		}
 
 		public JWTPrincipalBuilder setIssuer(String issuer) {
-			principal.issuer = issuer;
+			this.principal.issuer = issuer;
 			return this;
 		}
 
 		public JWTPrincipalBuilder setLoginName(String loginName) {
-			principal.loginName = loginName;
+			this.principal.loginName = loginName;
 			return this;
 		}
 
 		public JWTPrincipalBuilder setRoles(Set<String> roles) {
-			principal.roles = new LinkedHashSet<>(roles);
+			this.principal.roles = new LinkedHashSet<>(roles);
 			return this;
 		}
 	}
@@ -148,106 +148,106 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 			return false;
 		}
 		JWTPrincipal other = (JWTPrincipal) obj;
-		if (claims == null) {
+		if (this.claims == null) {
 			if (other.claims != null) {
 				return false;
 			}
-		} else if (!claims.equals(other.claims)) {
+		} else if (!this.claims.equals(other.claims)) {
 			return false;
 		}
-		if (emailAddress == null) {
+		if (this.emailAddress == null) {
 			if (other.emailAddress != null) {
 				return false;
 			}
-		} else if (!emailAddress.equals(other.emailAddress)) {
+		} else if (!this.emailAddress.equals(other.emailAddress)) {
 			return false;
 		}
-		if (familyName == null) {
+		if (this.familyName == null) {
 			if (other.familyName != null) {
 				return false;
 			}
-		} else if (!familyName.equals(other.familyName)) {
+		} else if (!this.familyName.equals(other.familyName)) {
 			return false;
 		}
-		if (fullName == null) {
+		if (this.fullName == null) {
 			if (other.fullName != null) {
 				return false;
 			}
-		} else if (!fullName.equals(other.fullName)) {
+		} else if (!this.fullName.equals(other.fullName)) {
 			return false;
 		}
-		if (givenName == null) {
+		if (this.givenName == null) {
 			if (other.givenName != null) {
 				return false;
 			}
-		} else if (!givenName.equals(other.givenName)) {
+		} else if (!this.givenName.equals(other.givenName)) {
 			return false;
 		}
-		if (identifier == null) {
+		if (this.identifier == null) {
 			if (other.identifier != null) {
 				return false;
 			}
-		} else if (!identifier.equals(other.identifier)) {
+		} else if (!this.identifier.equals(other.identifier)) {
 			return false;
 		}
-		if (loginName == null) {
+		if (this.loginName == null) {
 			if (other.loginName != null) {
 				return false;
 			}
-		} else if (!loginName.equals(other.loginName)) {
+		} else if (!this.loginName.equals(other.loginName)) {
 			return false;
 		}
-		if (roles == null) {
+		if (this.roles == null) {
 			if (other.roles != null) {
 				return false;
 			}
-		} else if (!roles.equals(other.roles)) {
+		} else if (!this.roles.equals(other.roles)) {
 			return false;
 		}
-		if (issuer == null) {
+		if (this.issuer == null) {
 			if (other.issuer != null) {
 				return false;
 			}
-		} else if (!issuer.equals(other.issuer)) {
+		} else if (!this.issuer.equals(other.issuer)) {
 			return false;
 		}
 		return true;
 	}
 
 	public Map<String, Object> getClaims() {
-		return claims;
+		return this.claims;
 	}
 
 	public String getEmailAddress() {
-		return emailAddress;
+		return this.emailAddress;
 	}
 
 	public String getFamilyName() {
-		return familyName;
+		return this.familyName;
 	}
 
 	public String getFullName() {
-		return fullName;
+		return this.fullName;
 	}
 
 	public String getGivenName() {
-		return givenName;
+		return this.givenName;
 	}
 
 	public String getIdentifier() {
-		return identifier;
+		return this.identifier;
 	}
 
 	public String getIssuer() {
-		return issuer;
+		return this.issuer;
 	}
 
 	public String getLoginName() {
-		return loginName;
+		return this.loginName;
 	}
 
 	public Set<String> getRoles() {
-		return roles;
+		return this.roles;
 	}
 
 	/*
@@ -259,15 +259,15 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (claims == null ? 0 : claims.hashCode());
-		result = prime * result + (emailAddress == null ? 0 : emailAddress.hashCode());
-		result = prime * result + (familyName == null ? 0 : familyName.hashCode());
-		result = prime * result + (fullName == null ? 0 : fullName.hashCode());
-		result = prime * result + (givenName == null ? 0 : givenName.hashCode());
-		result = prime * result + (identifier == null ? 0 : identifier.hashCode());
-		result = prime * result + (loginName == null ? 0 : loginName.hashCode());
-		result = prime * result + (roles == null ? 0 : roles.hashCode());
-		result = prime * result + (issuer == null ? 0 : issuer.hashCode());
+		result = prime * result + (this.claims == null ? 0 : this.claims.hashCode());
+		result = prime * result + (this.emailAddress == null ? 0 : this.emailAddress.hashCode());
+		result = prime * result + (this.familyName == null ? 0 : this.familyName.hashCode());
+		result = prime * result + (this.fullName == null ? 0 : this.fullName.hashCode());
+		result = prime * result + (this.givenName == null ? 0 : this.givenName.hashCode());
+		result = prime * result + (this.identifier == null ? 0 : this.identifier.hashCode());
+		result = prime * result + (this.loginName == null ? 0 : this.loginName.hashCode());
+		result = prime * result + (this.roles == null ? 0 : this.roles.hashCode());
+		result = prime * result + (this.issuer == null ? 0 : this.issuer.hashCode());
 		return result;
 	}
 
@@ -278,9 +278,10 @@ public class JWTPrincipal extends CallerPrincipal implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "JWTPrincipal [claims=" + claims + ", emailAddress=" + emailAddress + ", familyName=" + familyName
-				+ ", fullName=" + fullName + ", givenName=" + givenName + ", identifier=" + identifier + ", loginName="
-				+ loginName + ", roles=" + roles + ", issuer=" + issuer + "]";
+		return "JWTPrincipal [claims=" + this.claims + ", emailAddress=" + this.emailAddress + ", familyName="
+				+ this.familyName + ", fullName=" + this.fullName + ", givenName=" + this.givenName + ", identifier="
+				+ this.identifier + ", loginName=" + this.loginName + ", roles=" + this.roles + ", issuer="
+				+ this.issuer + "]";
 	}
 
 }

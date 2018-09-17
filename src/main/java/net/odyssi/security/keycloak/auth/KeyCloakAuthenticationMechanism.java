@@ -208,7 +208,7 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 
 					AccessToken accessToken = facade.getSecurityContext().getToken();
 					Credential cred = new TokenResponseCredential(accessToken);
-					CredentialValidationResult result = identityStore.validate(cred);
+					CredentialValidationResult result = this.identityStore.validate(cred);
 					if (logger.isDebugEnabled()) {
 						logger.debug(
 								"performKeyCloakLogin(HttpServletRequest, HttpServletResponse, HttpMessageContext) - CredentialValidationResult result=" //$NON-NLS-1$
@@ -251,7 +251,7 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 					}
 
 					AccessTokenCredential cred = new AccessTokenCredential(authToken);
-					CredentialValidationResult result = identityStore.validate(cred);
+					CredentialValidationResult result = this.identityStore.validate(cred);
 					if (logger.isDebugEnabled()) {
 						logger.debug(
 								"performKeyCloakLogin(HttpServletRequest, HttpServletResponse, HttpMessageContext) - CredentialValidationResult result=" //$NON-NLS-1$
@@ -292,7 +292,7 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 		}
 
 		AuthenticationStatus status = null;
-		AdapterConfig config = adapterConfigInstance.get();
+		AdapterConfig config = this.adapterConfigInstance.get();
 		if (config == null) {
 			logger.warn(
 					"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - No Keycloak adapter config found.  Continuing...", //$NON-NLS-1$
@@ -340,7 +340,7 @@ public class KeyCloakAuthenticationMechanism implements HttpAuthenticationMechan
 					logger.debug(
 							"validateRequest(HttpServletRequest, HttpServletResponse, HttpMessageContext) - New authentication request found.  Continuing to OAuth provider..."); //$NON-NLS-1$
 				}
-				status = this.performKeyCloakLogin(config, req, res, ctx);
+				status = performKeyCloakLogin(config, req, res, ctx);
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug(

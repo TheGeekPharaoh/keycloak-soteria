@@ -121,7 +121,7 @@ public class OAuthIdentityStore implements IdentityStore {
 			logger.debug("init() - start"); //$NON-NLS-1$
 		}
 
-		deployment = KeycloakDeploymentBuilder.build(adapterConfig);
+		this.deployment = KeycloakDeploymentBuilder.build(this.adapterConfig);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("init() - end"); //$NON-NLS-1$
@@ -139,9 +139,9 @@ public class OAuthIdentityStore implements IdentityStore {
 			logger.debug("validate(AccessTokenCredential) - start"); //$NON-NLS-1$
 		}
 
-		HttpServletRequest servletRequest = servletRequestInstance.get();
+		HttpServletRequest servletRequest = this.servletRequestInstance.get();
 
-		BearerTokenRequestAuthenticator authenticator = new BearerTokenRequestAuthenticator(deployment);
+		BearerTokenRequestAuthenticator authenticator = new BearerTokenRequestAuthenticator(this.deployment);
 		HttpFacade facade = new ServletHttpFacade(servletRequest, null);
 
 		AuthOutcome outcome = authenticator.authenticate(facade);
@@ -157,7 +157,7 @@ public class OAuthIdentityStore implements IdentityStore {
 			}
 
 			AccessToken token = authenticator.getToken();
-			JWTPrincipal principal = this.buildPrincipal(token);
+			JWTPrincipal principal = buildPrincipal(token);
 
 			result = new CredentialValidationResult(principal, principal.getRoles());
 		} else {
@@ -208,7 +208,8 @@ public class OAuthIdentityStore implements IdentityStore {
 				logger.debug("validate(Credential) - Credential validation successful.  Emitting CDI event..."); //$NON-NLS-1$
 			}
 
-			authenticationSuccessEvent.fire(new AuthenticationSuccessEvent((JWTPrincipal) result.getCallerPrincipal()));
+			this.authenticationSuccessEvent
+					.fire(new AuthenticationSuccessEvent((JWTPrincipal) result.getCallerPrincipal()));
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("validate(Credential) - CDI event emitted."); //$NON-NLS-1$
@@ -247,7 +248,7 @@ public class OAuthIdentityStore implements IdentityStore {
 						"validate(TokenResponseCredential) - Access token found in token response credential.  Building successful validation result..."); //$NON-NLS-1$
 			}
 
-			JWTPrincipal principal = this.buildPrincipal(token);
+			JWTPrincipal principal = buildPrincipal(token);
 			result = new CredentialValidationResult(principal, principal.getRoles());
 		}
 

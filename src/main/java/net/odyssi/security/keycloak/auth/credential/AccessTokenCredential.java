@@ -21,7 +21,7 @@ public class AccessTokenCredential implements Credential {
 	}
 
 	public String getToken() {
-		return token;
+		return this.token;
 	}
 
 }

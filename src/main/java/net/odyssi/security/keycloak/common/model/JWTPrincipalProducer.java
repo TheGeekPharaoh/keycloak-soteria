@@ -42,7 +42,7 @@ public class JWTPrincipalProducer {
 			logger.debug("produceJWTPrincipal() - start"); //$NON-NLS-1$
 		}
 
-		JWTPrincipal p = (JWTPrincipal) securityContext.getCallerPrincipal();
+		JWTPrincipal p = (JWTPrincipal) this.securityContext.getCallerPrincipal();
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("produceJWTPrincipal() - end"); //$NON-NLS-1$

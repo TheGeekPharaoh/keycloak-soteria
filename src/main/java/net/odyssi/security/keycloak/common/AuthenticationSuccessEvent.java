@@ -21,7 +21,7 @@ public class AuthenticationSuccessEvent {
 	}
 
 	public JWTPrincipal getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 }
