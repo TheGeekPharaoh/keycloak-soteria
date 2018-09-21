@@ -18,7 +18,7 @@ parameters to begin the federated authentication
 
 ## Requirements
 
-This project is built using KeyCloak 4.2.1 and Soteria 1.0.  All development and 
+This project is built using KeyCloak 4.4.0 and Soteria 1.0.  All development and 
 testing is performed against [Wildfly 11](https://www.wildfly.org), but should work 
 on subsequent verisons with no problem.  The library itself is packaged via Maven 
 as an EJB JAR
